@@ -72,8 +72,8 @@ add_action('wp_enqueue_scripts', function () {
       // subtle ambient floating motion for the cube (applies even when pointer is idle)
       'float' => [
         'x'        => 2,    // horizontal drift in px
-        'y'        => 5,    // vertical bob in px
-        'rotate'   => 0.6,  // tiny rotational sway in deg
+        'y'        => 3,    // vertical bob in px
+        'rotate'   => 0.4,  // tiny rotational sway in deg
         'periodMs' => 5000, // full loop duration
       ],
       // optional: only activate when mouse is inside this container; falls back to cube element
