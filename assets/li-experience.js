@@ -159,6 +159,11 @@ function initCubeScrollScale(hero) {
   const baseMaxT = typeof cm.maxTranslate === "number" ? cm.maxTranslate : 18;
   const baseMaxR = typeof cm.maxRotate === "number" ? cm.maxRotate : 5;
   const ease = typeof cm.ease === "number" ? cm.ease : 0.1;
+  const floatCfg = cm.float || {};
+  const floatAmpX = typeof floatCfg.x === "number" ? floatCfg.x : 2;
+  const floatAmpY = typeof floatCfg.y === "number" ? floatCfg.y : 5;
+  const floatRot = typeof floatCfg.rotate === "number" ? floatCfg.rotate : 0.6;
+  const floatPeriodMs = Math.max(1000, Number(floatCfg.periodMs || 5000));
 
   // Boost window (as hero scroll progress 0..1)
   // Example: starts boosting at 0.80, max at 1.00
@@ -171,6 +176,8 @@ function initCubeScrollScale(hero) {
   let targetX = 0, targetY = 0, targetR = 0;
   let currentX = 0, currentY = 0, currentR = 0;
   let raf = 0;
+  const floatEnabled = floatAmpX !== 0 || floatAmpY !== 0 || floatRot !== 0;
+  const t0 = performance.now();
 
   function getBoost() {
     const p = getSectionProgress(hero);
@@ -180,15 +187,26 @@ function initCubeScrollScale(hero) {
     return lerp(1.0, boostTo, k);
   }
 
-  function apply() {
+  function apply(now) {
     raf = 0;
 
     currentX += (targetX - currentX) * ease;
     currentY += (targetY - currentY) * ease;
     currentR += (targetR - currentR) * ease;
 
+    const theta = floatEnabled
+      ? ((now - t0) / floatPeriodMs) * Math.PI * 2
+      : 0;
+    const fx = floatEnabled ? Math.sin(theta) * floatAmpX : 0;
+    const fy = floatEnabled ? Math.cos(theta) * floatAmpY : 0;
+    const fr = floatEnabled ? Math.sin(theta * 0.5) * floatRot : 0;
+
     cubeWrap.style.transform =
-      `translate3d(${currentX}px, ${currentY}px, 0) rotate(${currentR}deg)`;
+      `translate3d(${currentX + fx}px, ${currentY + fy}px, 0) rotate(${currentR + fr}deg)`;
+
+    if (floatEnabled || Math.abs(currentX - targetX) > 0.01 || Math.abs(currentY - targetY) > 0.01 || Math.abs(currentR - targetR) > 0.01) {
+      requestApply();
+    }
   }
 
   function requestApply() {
@@ -223,6 +241,7 @@ function initCubeScrollScale(hero) {
   container.addEventListener("pointerleave", onLeave, { passive: true });
 
   onLeave();
+  if (floatEnabled) requestApply();
 }
 
   // ------------------------------------------------
