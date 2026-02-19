@@ -69,3 +69,24 @@
   bottom: 1rem;
   z-index: 9999;
 }
+.audio-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: transparent;
+  color: #DDE4E3;
+  border: 1px solid rgba(221,228,227,0.4);
+  padding: 8px 14px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.audio-button:hover {
+  background: rgba(221,228,227,0.1);
+  border-color: #F1C523;
+}
+
