@@ -415,6 +415,8 @@ function initCubeScrollScale(hero) {
     const remember = acfg.remember !== false;
     const defaultOn = (acfg.defaultState || "muted") === "on";
     const unlockOnFirstGesture = acfg.unlockOnFirstGesture !== false;
+    const fadeInMs = Math.max(0, Number(acfg.fadeInMs || 1500));
+    const targetVolume = Math.min(1, Math.max(0, Number(acfg.targetVolume ?? 1)));
 
     const key = "li_audio_enabled";
 
@@ -424,11 +426,30 @@ function initCubeScrollScale(hero) {
       btn.textContent = on ? "Sound On" : "Tap For Sound";
     };
 
+    const fadeToTargetVolume = () => {
+      if (fadeInMs === 0) {
+        audio.volume = targetVolume;
+        return;
+      }
+
+      const startTime = performance.now();
+      const startVolume = Math.min(audio.volume || 0, targetVolume);
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / fadeInMs);
+        audio.volume = startVolume + (targetVolume - startVolume) * t;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
     const enableAudio = async () => {
       try {
         audio.muted = false;
+        audio.volume = 0;
         // playsinline already on your markup
         await audio.play();
+        fadeToTargetVolume();
         setUI(true);
         if (remember) localStorage.setItem(key, "1");
       } catch (e) {
@@ -439,6 +460,7 @@ function initCubeScrollScale(hero) {
     const disableAudio = () => {
       audio.pause();
       audio.muted = true;
+      audio.volume = targetVolume;
       setUI(false);
       if (remember) localStorage.setItem(key, "0");
     };

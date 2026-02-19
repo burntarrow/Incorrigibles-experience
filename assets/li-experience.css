@@ -59,3 +59,13 @@
   display:inline-block;
   will-change:transform;
 }
+
+/* =========================
+   SITE AUDIO TOGGLE
+   ========================= */
+#audio-toggle{
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+}
