@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Incorrigibles – Experience Layer (MU)
  * Description: Grain overlay, site audio toggle/autoplay helper, hero fade, cube mouse tension, and “misbehave” typography.
- * Version: 0.2.0
+ * Version: 0.2.1
  */
 
 if (!defined('ABSPATH')) exit;
@@ -11,7 +11,7 @@ add_action('wp_enqueue_scripts', function () {
   if (is_admin()) return;
 
   $base_url = plugin_dir_url(__FILE__); // points to .../mu-plugins/lesincorrigibles-experience/
-  $ver = '0.2.0';
+  $ver = '0.2.1';
 
   // ✅ Sitewide assets (lightweight; JS exits early if selectors missing)
   wp_enqueue_style(
@@ -83,7 +83,9 @@ add_action('wp_enqueue_scripts', function () {
 
     'audio' => [
       'remember'     => true,   // localStorage preference
-      'defaultState' => 'muted', // 'muted' or 'on'
+      'defaultState' => 'on', // 'muted' or 'on'
+      'fadeInMs'     => 1500,
+      'targetVolume' => 1,
       // when true: first user click/tap anywhere can enable audio (optional)
       'unlockOnFirstGesture' => true,
     ],
