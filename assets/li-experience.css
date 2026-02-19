@@ -71,7 +71,7 @@
 }
 #audio-toggle,
 .audio-button {
-  background: transparent;
+  background-color: transparent;
   color: #DDE4E3;
   border: 1px solid rgba(221,228,227,0.4);
   padding: 8px 14px;
@@ -85,6 +85,6 @@
 
 #audio-toggle:hover,
 .audio-button:hover {
-  background: rgba(221,228,227,0.1);
+  background-color: rgba(221,228,227,0.1);
   border-color: #F1C523;
 }
