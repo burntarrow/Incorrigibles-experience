@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Les Incorrigibles – Experience Layer (MU)
+ * Plugin Name: Les Incorrigibles – Experience Layer
  * Description: Grain overlay, site audio toggle/autoplay helper, hero fade, cube mouse tension, and “misbehave” typography.
- * Version: 0.2.1
+ * Version: 0.2.2
  */
 
 if (!defined('ABSPATH')) exit;
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) exit;
 add_action('wp_enqueue_scripts', function () {
   if (is_admin()) return;
 
-  $base_url = plugin_dir_url(__FILE__); // points to .../mu-plugins/lesincorrigibles-experience/
+  $base_url = plugin_dir_url(__FILE__); // points to .../plugins/lesincorrigibles-experience/
   $ver = '0.2.1';
 
   // ✅ Sitewide assets (lightweight; JS exits early if selectors missing)
@@ -74,7 +74,7 @@ add_action('wp_enqueue_scripts', function () {
     ],
 
     'misbehave' => [
-      'scatter' => ['start' => 0.55, 'end' => 0.70],
+      'scatter' => ['start' => 0.90, 'end' => 1.00],
       'strength' => ['dx' => 22, 'dy' => 18, 'rot' => 10],
       'shake' => ['durationMs' => 600, 'freqHz' => 22, 'rotateDeg' => 1.2],
       // shake re-triggers if user scrolls back above end by this margin
@@ -84,7 +84,7 @@ add_action('wp_enqueue_scripts', function () {
     'audio' => [
       'remember'     => true,   // localStorage preference
       'defaultState' => 'on', // 'muted' or 'on'
-      'fadeInMs'     => 1500,
+      'fadeInMs'     => 5000,
       'targetVolume' => 1,
       // when true: first user click/tap anywhere can enable audio (optional)
       'unlockOnFirstGesture' => true,
