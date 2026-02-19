@@ -70,9 +70,6 @@
   z-index: 9999;
 }
 .audio-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
   background: transparent;
   color: #DDE4E3;
   border: 1px solid rgba(221,228,227,0.4);
