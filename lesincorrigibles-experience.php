@@ -74,11 +74,11 @@ add_action('wp_enqueue_scripts', function () {
     ],
 
     'misbehave' => [
-      'scatter' => ['start' => 0.90, 'end' => 1.00],
-      'strength' => ['dx' => 22, 'dy' => 18, 'rot' => 10],
-      'shake' => ['durationMs' => 600, 'freqHz' => 22, 'rotateDeg' => 1.2],
+      'scatter' => ['start' => 0.88, 'end' => 1.20],
+      'strength' => ['dx' => 18, 'dy' => 10, 'rot' => 8],
+      'shake' => ['durationMs' => 420, 'freqHz' => 20, 'rotateDeg' => 0.8],
       // shake re-triggers if user scrolls back above end by this margin
-      'resetMargin' => 0.02,
+      'resetMargin' => 0.03,
     ],
 
     'audio' => [
