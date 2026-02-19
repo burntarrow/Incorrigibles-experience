@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Incorrigibles – Experience Layer
  * Description: Grain overlay, site audio toggle/autoplay helper, hero fade, cube mouse tension, and “misbehave” typography.
- * Version: 0.2.3
+ * Version: 0.2.4
  */
 
 if (!defined('ABSPATH')) exit;
@@ -11,7 +11,7 @@ add_action('wp_enqueue_scripts', function () {
   if (is_admin()) return;
 
   $base_url = plugin_dir_url(__FILE__); // points to .../plugins/lesincorrigibles-experience/
-  $ver = '0.2.3';
+  $ver = '0.2.4';
 
   // ✅ Sitewide assets (lightweight; JS exits early if selectors missing)
   wp_enqueue_style(
@@ -62,15 +62,22 @@ add_action('wp_enqueue_scripts', function () {
 
     'cubeMouse' => [
       // px translation & degrees rotation at max effect
-        'maxTranslate' => 18,
-        'maxRotate'    => 5,
+      'maxTranslate' => 18,
+      'maxRotate'    => 5,
       // smoothing: higher = slower ease
-        'ease'         => 0.10,
-        'boostStart'   => 0.80,
-        'boostEnd'     => 1.00,
-        'boostTo'      => 1.60,
+      'ease'         => 0.10,
+      'boostStart'   => 0.80,
+      'boostEnd'     => 1.00,
+      'boostTo'      => 1.60,
+      // subtle ambient floating motion for the cube (applies even when pointer is idle)
+      'float' => [
+        'x'        => 2,    // horizontal drift in px
+        'y'        => 5,    // vertical bob in px
+        'rotate'   => 0.6,  // tiny rotational sway in deg
+        'periodMs' => 5000, // full loop duration
+      ],
       // optional: only activate when mouse is inside this container; falls back to cube element
-        'containerSelector' => null,
+      'containerSelector' => null,
     ],
 
     'misbehave' => [
