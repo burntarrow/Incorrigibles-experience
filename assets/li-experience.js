@@ -100,9 +100,18 @@ function initCubeScrollScale(hero) {
   if (!cubeOuter) return;
 
   const cs = cfg.cubeScale || {};
-  const start = typeof cs.start === "number" ? cs.start : 0.0;
-  const end   = typeof cs.end === "number" ? cs.end : 0.20; // how quickly it scales down
+  const rawStart = typeof cs.start === "number" ? cs.start : 0.0;
+  const rawEnd   = typeof cs.end === "number" ? cs.end : 0.20; // how quickly it scales down
   const to    = typeof cs.to === "number" ? cs.to : 0.95;
+
+  // Guard against inverted or invalid ranges so a bad config doesn't disable the effect.
+  const hasValidRange = Number.isFinite(rawStart) && Number.isFinite(rawEnd) && rawStart < rawEnd;
+  const start = hasValidRange ? clamp01(rawStart) : 0.0;
+  const end = hasValidRange ? clamp01(rawEnd) : 0.20;
+
+  // Keep any existing transform from the theme/builder and append our scale animation.
+  const inlineTransform = cubeOuter.style.transform || "";
+  const baseTransform = inlineTransform.trim();
 
   let ticking = false;
 
@@ -115,7 +124,9 @@ function initCubeScrollScale(hero) {
     const t = easeInQuint(tRaw); // smooth ease-in
 
     const scale = lerp(1.0, to, t);
-    cubeOuter.style.transform = `scale(${scale})`;
+    cubeOuter.style.transform = baseTransform
+      ? `${baseTransform} scale(${scale})`
+      : `scale(${scale})`;
   };
 
   const onScroll = () => {
@@ -193,7 +204,7 @@ function initCubeScrollScale(hero) {
     const maxT = baseMaxT * boost;
     const maxR = baseMaxR * boost;
 
-    // “resistance” opposite motion
+    // resistance opposite motion
     targetX = -nx * maxT;
     targetY = -ny * maxT * 0.8;
     targetR = nx * maxR;
@@ -231,7 +242,7 @@ function initCubeScrollScale(hero) {
     const shakeCfg = mb.shake || { durationMs: 600, freqHz: 22, rotateDeg: 1.2 };
     const resetMargin = typeof mb.resetMargin === "number" ? mb.resetMargin : 0.02;
 
-    // Split into letters once (donâ€™t double-split)
+    // Split into letters once (do not double-split)
     if (wordEl.dataset.mbSplit === "1") return;
     wordEl.dataset.mbSplit = "1";
 
@@ -365,7 +376,7 @@ function initCubeScrollScale(hero) {
 
       const k = easeOutQuint(clamp01(t));
 
-      // Apply scatter transforms only if shake loop isnâ€™t owning transforms
+      // Apply scatter transforms only if shake loop is not owning transforms
       if (!shaking) setScatterIntensity(k);
 
       // Trigger shake once when crossing end
