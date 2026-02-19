@@ -69,6 +69,7 @@
   bottom: 1rem;
   z-index: 9999;
 }
+#audio-toggle,
 .audio-button {
   background: transparent;
   color: #DDE4E3;
@@ -82,8 +83,8 @@
   transition: all 0.3s ease;
 }
 
+#audio-toggle:hover,
 .audio-button:hover {
   background: rgba(221,228,227,0.1);
   border-color: #F1C523;
 }
-
