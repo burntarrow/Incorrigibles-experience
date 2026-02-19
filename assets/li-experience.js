@@ -417,8 +417,11 @@ function initCubeScrollScale(hero) {
     const unlockOnFirstGesture = acfg.unlockOnFirstGesture !== false;
     const fadeInMs = Math.max(0, Number(acfg.fadeInMs || 1500));
     const targetVolume = Math.min(1, Math.max(0, Number(acfg.targetVolume ?? 1)));
+    const shouldLoop = acfg.loop !== false;
 
     const key = "li_audio_enabled";
+
+    audio.loop = shouldLoop;
 
     const setUI = (on) => {
       btn.setAttribute("aria-pressed", on ? "true" : "false");
