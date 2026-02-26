@@ -563,11 +563,10 @@ function initCubeScrollScale(hero) {
   initAudio();
 
   // Hero-ish modules: run only when a hero section exists
-  const hero = document.querySelector(sel.heroSection || ".grain-wrap");
-  if (hero) {
-    initFade(hero);
-    initCubeScrollScale(hero);
-    initCubeMouse(hero);
-    initMisbehave(hero);
-  }
-})();
+ const heroes = document.querySelectorAll(sel.heroSection || ".grain-wrap");
+heroes.forEach((hero) => {
+  initFade(hero);
+  initCubeScrollScale(hero);
+  initCubeMouse(hero);
+  initMisbehave(hero);
+});
