@@ -59,6 +59,11 @@
   display:inline-block;
   will-change:transform;
 }
+.fade-subtitle{
+  transform-origin: center bottom;
+  will-change: opacity, transform, filter;
+}
+
 
 /* =========================
    SITE AUDIO TOGGLE
