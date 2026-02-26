@@ -55,8 +55,16 @@ add_action('wp_enqueue_scripts', function () {
     ],
 
     'subtitleEnvelope' => [
-      'p0' => 0.00, 'p1' => 0.05, 'p2' => 0.20, 'p3' => 0.80, 'p4' => 1.00
-    ],
+  'p0' => 0.00,
+  'p1' => 0.05,
+  'p2' => 0.20,
+  'p3' => 0.80,
+  'p4' => 1.00,
+],
+'subtitleBlur' => [
+  'maxPx' => 6, // micro blur amount when hidden
+],
+
     
     'cubeScale' => [
         'start' => 1.00,   // start immediately
