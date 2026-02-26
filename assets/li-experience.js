@@ -40,7 +40,8 @@
   function initFade(hero) {
     const cube = hero.querySelector(sel.cube || ".fade-cube");
     const title = hero.querySelector(sel.title || ".fade-title");
-    if (!cube && !title) return;
+    const subtitle = hero.querySelector(sel.subtitle || ".fade-subtitle");
+    if (!cube && !title && !subtitle) return;
 
     const fadeCfg = cfg.fade || {};
     const cubeFade = fadeCfg.cube || { start: 0.9, end: 0.97 };
@@ -53,6 +54,32 @@
       yFrom: 0,
       yTo: -30,
     };
+    const env = cfg.subtitleEnvelope || { p0: 0, p1: 0.05, p2: 0.20, p3: 0.80, p4: 1 };
+
+    function subtitleEnvelope(p, envelope) {
+      const p1 = clamp01(envelope.p1 ?? 0.05);
+      const p2 = clamp01(envelope.p2 ?? 0.20);
+      const p3 = clamp01(envelope.p3 ?? 0.80);
+      const p4 = clamp01(envelope.p4 ?? 1.00);
+
+      if (p <= p1) return { opacity: 0, scale: 0 };
+
+      if (p > p1 && p < p2) {
+        const tRaw = clamp01((p - p1) / Math.max(0.0001, p2 - p1));
+        const t = easeInQuint(tRaw);
+        return { opacity: t, scale: t };
+      }
+
+      if (p >= p2 && p <= p3) return { opacity: 1, scale: 1 };
+
+      if (p > p3 && p < p4) {
+        const tRaw = clamp01((p - p3) / Math.max(0.0001, p4 - p3));
+        const t = easeInQuint(tRaw);
+        return { opacity: 1 - t, scale: 1 - t };
+      }
+
+      return { opacity: 0, scale: 0 };
+    }
 
     let ticking = false;
 
@@ -78,6 +105,14 @@
         const y = lerp(titleMotion.yFrom, titleMotion.yTo, t);
 
         title.style.transform = `translateY(${y}px) scale(${scale})`;
+      }
+
+      if (subtitle) {
+        const { opacity, scale } = subtitleEnvelope(p, env);
+        subtitle.style.opacity = opacity;
+        // NOTE: If Divi/theme already sets transform on .fade-subtitle, prefer animating a nested wrapper to avoid transform conflicts.
+        subtitle.style.transform = `scale(${scale})`;
+        subtitle.style.pointerEvents = opacity < 0.05 ? "none" : "";
       }
     };
 
