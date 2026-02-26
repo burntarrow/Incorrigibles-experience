@@ -36,6 +36,7 @@ add_action('wp_enqueue_scripts', function () {
       'heroSection' => '.grain-wrap',
       'cube'        => '.fade-cube',
       'title'       => '.fade-title',
+      'subtitle'    => '.fade-subtitle',
       'misbehave'   => '.misbehave-word',
 
       // audio sitewide
@@ -51,6 +52,10 @@ add_action('wp_enqueue_scripts', function () {
         'scaleFrom' => 1.00, 'scaleTo' => 1.18,
         'yFrom' => 0, 'yTo' => -50
       ],
+    ],
+
+    'subtitleEnvelope' => [
+      'p0' => 0.00, 'p1' => 0.05, 'p2' => 0.20, 'p3' => 0.80, 'p4' => 1.00
     ],
     
     'cubeScale' => [
