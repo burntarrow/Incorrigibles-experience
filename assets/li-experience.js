@@ -108,12 +108,20 @@
       }
 
       if (subtitle) {
-        const { opacity, scale } = subtitleEnvelope(p, env);
-        subtitle.style.opacity = opacity;
-        // NOTE: If Divi/theme already sets transform on .fade-subtitle, prefer animating a nested wrapper to avoid transform conflicts.
-        subtitle.style.transform = `scale(${scale})`;
-        subtitle.style.pointerEvents = opacity < 0.05 ? "none" : "";
-      }
+  const { opacity, scale } = subtitleEnvelope(p, env);
+
+  const maxBlur = (cfg.subtitleBlur && typeof cfg.subtitleBlur.maxPx === "number")
+    ? cfg.subtitleBlur.maxPx
+    : 6;
+
+  // Blur is strongest when scale is near 0, and clears as it reaches 1
+  const blur = (1 - clamp01(scale)) * maxBlur;
+
+  subtitle.style.opacity = opacity;
+  subtitle.style.transform = `scale(${scale})`;
+  subtitle.style.filter = `blur(${blur.toFixed(2)}px)`;
+  subtitle.style.pointerEvents = opacity < 0.05 ? "none" : "";
+}
     };
 
     const onScroll = () => {
