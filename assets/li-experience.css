@@ -93,3 +93,12 @@
   background-color: rgba(221,228,227,0.1);
   border-color: #F1C523;
 }
+/* =========================
+   Manifesto Blur
+   ========================= */
+.manifesto-row{
+  background: rgba(4, 55, 35, 0.1); /* must be translucent */
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  will-change: backdrop-filter, -webkit-backdrop-filter;
+}
