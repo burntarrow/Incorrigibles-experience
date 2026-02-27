@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Incorrigibles – Experience Layer
  * Description: Grain overlay, site audio toggle/autoplay helper, hero fade, cube mouse tension, and “misbehave” typography.
- * Version: 0.2.4
+ * Version: 0.2.5
  */
 
 if (!defined('ABSPATH')) exit;
