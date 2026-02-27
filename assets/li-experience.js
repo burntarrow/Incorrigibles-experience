@@ -56,13 +56,39 @@
     };
     const env = cfg.subtitleEnvelope || { p0: 0, p1: 0.05, p2: 0.20, p3: 0.80, p4: 1 };
 
-    function subtitleEnvelope(p, envelope) {
-      const p1 = clamp01(envelope.p1 ?? 0.05);
-      const p2 = clamp01(envelope.p2 ?? 0.20);
-      const p3 = clamp01(envelope.p3 ?? 0.80);
-      const p4 = clamp01(envelope.p4 ?? 1.00);
+    const subtitleBaseTransform = subtitle
+      ? (subtitle.style.transform || "").trim()
+      : "";
 
-      if (p <= p1) return { opacity: 0, scale: 0 };
+    function normalizeEnvelope(envelope) {
+      const rawP0 = clamp01(envelope.p0 ?? 0.00);
+      const rawP1 = clamp01(envelope.p1 ?? 0.05);
+      const rawP2 = clamp01(envelope.p2 ?? 0.20);
+      const rawP3 = clamp01(envelope.p3 ?? 0.80);
+      const rawP4 = clamp01(envelope.p4 ?? 1.00);
+
+      // Ensure monotonic order so bad config values don't break the animation.
+      const p0 = rawP0;
+      const p1 = Math.max(p0, rawP1);
+      const p2 = Math.max(p1, rawP2);
+      const p3 = Math.max(p2, rawP3);
+      const p4 = Math.max(p3, rawP4);
+
+      return { p0, p1, p2, p3, p4 };
+    }
+
+    const safeEnv = normalizeEnvelope(env);
+
+    function subtitleEnvelope(p, envelope) {
+      const { p0, p1, p2, p3, p4 } = envelope;
+
+      if (p <= p0) return { opacity: 0, scale: 0 };
+
+      if (p > p0 && p < p1) {
+        const tRaw = clamp01((p - p0) / Math.max(0.0001, p1 - p0));
+        const t = easeOutQuint(tRaw);
+        return { opacity: t * 0.35, scale: t * 0.35 };
+      }
 
       if (p > p1 && p < p2) {
         const tRaw = clamp01((p - p1) / Math.max(0.0001, p2 - p1));
@@ -108,7 +134,15 @@
       }
 
       if (subtitle) {
-  const { opacity, scale } = subtitleEnvelope(p, env);
+  if (prefersReduced) {
+    subtitle.style.opacity = 1;
+    subtitle.style.transform = subtitleBaseTransform || "none";
+    subtitle.style.filter = "none";
+    subtitle.style.pointerEvents = "";
+    return;
+  }
+
+  const { opacity, scale } = subtitleEnvelope(p, safeEnv);
 
   const maxBlur = (cfg.subtitleBlur && typeof cfg.subtitleBlur.maxPx === "number")
     ? cfg.subtitleBlur.maxPx
@@ -118,7 +152,9 @@
   const blur = (1 - clamp01(scale)) * maxBlur;
 
   subtitle.style.opacity = opacity;
-  subtitle.style.transform = `scale(${scale})`;
+  subtitle.style.transform = subtitleBaseTransform
+    ? `${subtitleBaseTransform} scale(${scale})`
+    : `scale(${scale})`;
   subtitle.style.filter = `blur(${blur.toFixed(2)}px)`;
   subtitle.style.pointerEvents = opacity < 0.05 ? "none" : "";
 }
@@ -570,3 +606,5 @@ heroes.forEach((hero) => {
   initCubeMouse(hero);
   initMisbehave(hero);
 });
+
+})();
