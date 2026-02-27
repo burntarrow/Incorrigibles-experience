@@ -500,9 +500,74 @@ function initCubeScrollScale(hero) {
     window.addEventListener("resize", update);
     update();
   }
+  // ------------------------------------------------
+  // 4) Manifesto BLur
+  // ------------------------------------------------
+ function initManifestoBackdropBlur() {
+  const prefersReduced =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced) return;
+
+  const mb = cfg.manifestoBlur || {};
+  const selector = mb.selector || ".manifesto-row";
+  const maxPx = typeof mb.maxPx === "number" ? mb.maxPx : 5;
+  const minPx = typeof mb.minPx === "number" ? mb.minPx : 0;
+  const falloff = typeof mb.falloff === "number" ? mb.falloff : 0.55;
+
+  const rows = Array.from(document.querySelectorAll(selector));
+  if (!rows.length) return;
+
+  const clamp01 = (n) => Math.max(0, Math.min(1, n));
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  // Smooth peak (optional)
+  const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
+
+  let ticking = false;
+
+  function update() {
+    ticking = false;
+
+    const vh = window.innerHeight || 1;
+    const vc = vh / 2;
+
+    // Distance at which blur reaches minimum (in px)
+    const falloffPx = vh * falloff;
+
+    for (const el of rows) {
+      const r = el.getBoundingClientRect();
+
+      // Skip far offscreen for perf
+      if (r.bottom < -200 || r.top > vh + 200) continue;
+
+      const ec = r.top + r.height / 2;     // element center
+      const dist = Math.abs(ec - vc);      // distance to viewport center
+
+      // 1 at center → 0 at/after falloff distance
+      const strengthRaw = 1 - clamp01(dist / Math.max(1, falloffPx));
+      const strength = easeOutQuint(strengthRaw);
+
+      const blur = lerp(minPx, maxPx, strength);
+
+      el.style.backdropFilter = `blur(${blur.toFixed(2)}px)`;
+      el.style.webkitBackdropFilter = `blur(${blur.toFixed(2)}px)`;
+    }
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+}
 
   // -----------------------------------
-  // 4) Audio helper (sitewide)
+  // 5) Audio helper (sitewide)
   // -----------------------------------
   function initAudio() {
     const audio = document.querySelector(sel.audio || "#site-audio");
@@ -605,6 +670,7 @@ heroes.forEach((hero) => {
   initCubeScrollScale(hero);
   initCubeMouse(hero);
   initMisbehave(hero);
+  initManifestoBackdropBlur();
 });
 
 })();
