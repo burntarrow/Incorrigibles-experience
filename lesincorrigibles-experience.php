@@ -110,6 +110,14 @@ add_action('wp_enqueue_scripts', function () {
       // when true: first user click/tap anywhere can enable audio (optional)
       'unlockOnFirstGesture' => true,
     ],
+    
+    'manifestoBlur' => [
+        'selector' => '.manifesto-row',
+        'maxPx' => 4,          // max blur at exact center
+        'falloff' => 0.5,      // how quickly it drops off (fraction of viewport height)
+        'minPx' => 0,           // optional floor blur
+],
+
   ];
 
   wp_localize_script('li-experience', 'LI_EXPERIENCE', $config);
